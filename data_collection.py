@@ -114,7 +114,7 @@ def parse_urls(urls , first):
             df.to_excel("output.xlsx")
 
 
-df = pd.read_excel('output_new_with_region.xlsx', sheet_name='Sheet1')
+df = pd.read_excel('full_clinic.xlsx', sheet_name='Sheet1')
 urls = df['Ссылка на www.list-org.com'].to_list()
 
 parse_urls(urls, 94)

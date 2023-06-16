@@ -1,0 +1,441 @@
+{% extends 'base.html' %}
+{% block title %}
+Главная страница
+{% endblock %}
+
+{% block body %}
+<div style="display: flex; justify-content: center; ">
+    <div style="">
+        <form id="filter_form" class="container" style="display: flex; justify-content: center;">
+
+            <div style="text-align: center; justify-content: center; margin-right: 20px; ">
+                <h2>Регион</h2>
+                <div>
+                    <select id="mltislct3" name="region" multiple="multiple" style="width: 100px">
+                        {% for el in regions %}
+                        <option value="{{el.id}}"> {{ el.region_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div style="text-align: center; justify-content: center; margin-right: 20px;">
+                <h2>Специализация</h2>
+                <div>
+                    <select id="mltislct2" name="specialization" multiple="multiple" style="max-width: 50px; max-font-size: 50px">
+                        {% for el in spec %}
+                        <option> {{el}}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+            </div>
+
+            <div style="text-align: center; justify-content: center; margin-right: 20px">
+                <h2>Тип клиники</h2>
+                <div>
+                    <select id="mltislct" name="clinic_type" multiple="multiple">
+                        <option>Частная организация</option>
+                        <option>Государственная организация</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <button
+                    class="btn"
+                    type="submit"
+                    style=" margin-top: 40px; margin-left: 20px; background-color: darkcyan; color: white"
+                >
+                    Отфильтровать
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="pagination">
+    <div id="loader" class="loader"></div>
+    <button
+        class="pagination__arrow"
+        onclick="setPage({ page: 'prev' })"
+    >
+        &laquo;
+    </button>
+    <div id="paginationBox" class="pagination__box"></div>
+    <button
+        class="pagination__arrow"
+        onclick="setPage({ page: 'next' })"
+    >
+        &raquo;
+    </button>
+</div>
+<div id="cards"></div>
+
+<script>
+    $(document).ready(function () {
+        $('#mltislct').multiselect({
+            maxHeight: 300,
+            maxLength: 60,
+            includeSelectAllOption: true,
+            enableFiltering: true,
+            enableCaseInsensitiveFiltering: true,
+            filterPlaceholder: 'Search Here..'
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#mltislct1').multiselect({
+                maxHeight: 300,
+                maxLength: 60,
+                includeSelectAllOption: true,
+                enableFiltering: true,
+                enableCaseInsensitiveFiltering: true,
+                filterPlaceholder: 'Search Here..'
+            }
+        );
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#mltislct2').multiselect({
+                maxHeight: 300,
+                maxLength: 60,
+                width: 60,
+                includeSelectAllOption: true,
+                enableFiltering: true,
+                enableCaseInsensitiveFiltering: true,
+                filterPlaceholder: 'Search Here..'
+            }
+        );
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $('#mltislct3').multiselect({
+            maxHeight: 300,
+            width: 60,
+            includeSelectAllOption: true,
+            enableFiltering: true,
+            enableCaseInsensitiveFiltering: true,
+            filterPlaceholder: 'Search Here..'
+        });
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#myInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#myList li").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+</script>
+<script>
+    const filter_form = document.querySelector('#filter_form');
+    const pagination = document.querySelector('#paginationBox');
+    const loader = document.querySelector('#loader');
+
+    let activePageNumber, pageCount;
+
+    filterData(1)
+        .then(() => {
+            paginationWrite({ countPage: pageCount, currentPage: activePageNumber, maxCountPage: 7 });
+        });
+
+    filter_form.addEventListener('click', event => {
+        event.preventDefault();
+        filterData(1)
+            .then(() => {
+                paginationWrite({ countPage: pageCount, currentPage: activePageNumber, maxCountPage: 7 });
+            });
+    });
+    async function filterData(page_mum) {
+        let formData = new FormData(filter_form);
+
+        let filterData = {
+            filterRegion: getNewArrayFilter(formData.getAll('region')),
+            filterSpecialization: getNewArrayFilter(formData.getAll('specialization')),
+            filterClinicType: getNewArrayFilter(formData.getAll('clinic_type')),
+            pageNum: page_mum
+        }
+        activePageNumber = page_mum;
+
+        try {
+            stopStartLoader('start');
+
+            const response = await fetch('/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(filterData)
+            });
+            const jsonRes = await response.json();
+            const filteredList = document.getElementById('cards');
+
+            pageCount = Math.round(jsonRes[0].page_len);
+            filteredList.innerHTML = ''; // Очищаем список
+            jsonRes[0].array.forEach(item => {
+                filteredList.innerHTML += getCardHTML(item);
+            });
+        } catch (err) {
+            console.log(err);
+        } finally {
+            stopStartLoader('stop');
+        }
+    }
+    function getCardHTML(c) {
+        return `
+            <div
+                id="card card${c.clinic_id}"
+
+                style="margin-left: 150px;  padding-left: 20px; padding-right: 20px; margin-bottom: 10px; margin-top: 10px; padding-bottom: 20px; padding-top: 20px; margin-right: 150px; background-color: darkslategray; color: white; border-radius: 10px"
+            >
+                <h3>${c.name}</h3>
+                <h3>Руководитель: ${c.leader}</h3>
+                <b id="region" style="display: none">${c.clinic_region}</b>
+                ${c.is_private ? '<h6 id="clinic_type">Частная организация</h6>' : '<h6 id="clinic_type">Государственная организация</h6>'}
+
+                <h6 id="specialization">${c.specialization}</h6>
+                <p>
+                    ${c.short_name}
+                </p>
+                <p> ИНН: <b>${ c.inn }</b></p>
+                <h4>Юридический адрес: ${c.clinic_legal_address}</h4>
+
+                ${c.phone_numbers !== '' ? '<h4>Номер телефона: ' + c.phone_numbers+'</h4>' : ''}
+                ${c.mail !== '' ? '<h4>Электронная почта: ' + c.mail + '</h4>' : ''}
+                ${c.nets !== '' ? '<h4>Сайт: ' +c.nets+'</h4>' : ''}
+                ${c.partner !== false ? '<h3>Партнер</h3>' : ''}
+
+                <a
+                    href="/mo/${c.clinic_id}/edit"
+                    class="btn"
+                    style=" margin-left: 20px; background-color: darkcyan; color: white"
+                >
+                    Редактировать
+                </a>
+                <button
+                    class="btn"
+                    style=" margin-left: 20px; background-color: darkcyan; color: white"
+                    onclick="delCard(${c.clinic_id})"
+                >
+                    Удалить
+                </button>
+            </div>
+        `
+    }
+
+    function delCard(id) {
+        const card = document.getElementById(`card card${id}`);
+
+        try {
+            stopStartLoader('start');
+            fetch('/mo/' + id + '/del', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            card.remove();
+        } catch (err) {
+            console.log(err);
+        } finally {
+            stopStartLoader('stop');
+        }
+    }
+    function getNewArrayFilter(filterArray) {
+        const newArray = [];
+        filterArray.forEach(item => {
+            newArray.push({
+                value: item
+            })
+        })
+
+        return newArray;
+    }
+    function paginationWrite({ countPage, currentPage, maxCountPage }) {
+        pagination.innerHTML = '';
+
+        const halfMaxCountPage = Math.floor(maxCountPage / 2);
+
+        let startPage = currentPage - halfMaxCountPage;
+        let endPage = currentPage + halfMaxCountPage;
+
+        if (startPage <= 0) {
+            endPage -= startPage - 1;
+            startPage = 1;
+        }
+
+        if (endPage > countPage) {
+            startPage -= endPage - countPage;
+            endPage = countPage;
+        }
+
+        const hasLeftEllipsis = startPage > 2;
+        const hasRightEllipsis = endPage < countPage - 1;
+
+        for (let i = 1; i <= countPage; ++i) {
+            if (i === 1) {
+                const button = document.createElement('button');
+
+                button.className = 'pagination__item';
+                if(i === currentPage) button.className += ' pagination__item-active';
+                button.textContent = i;
+                button.onclick = function() {
+                    setPage({ setPage: i })
+                };
+
+                pagination.appendChild(button);
+
+                if (hasLeftEllipsis) {
+                    const ellipsisButton = document.createElement('button');
+
+                    ellipsisButton.className = 'pagination__item';
+                    ellipsisButton.textContent = '...';
+
+                    pagination.appendChild(ellipsisButton);
+                }
+            } else if (i === countPage) {
+                if (hasRightEllipsis) {
+                    const ellipsisButton = document.createElement('button');
+
+                    ellipsisButton.className = 'pagination__item';
+                    ellipsisButton.textContent = '...';
+
+                    pagination.appendChild(ellipsisButton);
+                }
+
+                const button = document.createElement('button');
+
+                button.className = 'pagination__item';
+                if(i === currentPage) button.className += ' pagination__item-active';
+                button.textContent = i;
+                button.onclick = function() {
+                    setPage({ setPage: i })
+                };
+
+                pagination.appendChild(button);
+            } else if (i >= startPage && i <= endPage) {
+                const button = document.createElement('button');
+
+                button.className = 'pagination__item';
+                if(i === currentPage) button.className += ' pagination__item-active';
+                button.textContent = i;
+                button.onclick = function() {
+                    setPage({ setPage: i })
+                };
+
+                pagination.appendChild(button);
+            }
+        }
+    }
+    function setPage({ page, setPage }) {
+        if (page === 'next' ) {
+            filterData(++activePageNumber).then(() => {
+                paginationWrite({ countPage: pageCount, currentPage: activePageNumber, maxCountPage: 7 });
+            });
+        }
+        if (page === 'prev' && activePageNumber>1) {
+            filterData(--activePageNumber).then(() => {
+                paginationWrite({ countPage: pageCount, currentPage: activePageNumber, maxCountPage: 7 });
+            });
+        }
+        if(setPage) {
+            filterData(setPage).then(() => {
+                paginationWrite({ countPage: pageCount, currentPage: activePageNumber, maxCountPage: 7 });
+            });
+        }
+    }
+    function stopStartLoader(value) {
+        switch (value) {
+            case 'start': {
+                loader.classList.remove('hide');
+                break;
+            }
+            case 'stop': {
+                loader.classList.add('hide');
+                break;
+            }
+        }
+    }
+</script>
+<style>
+    #card.hide {
+        display: none !important;
+    }
+    #filter_form .btn {
+        max-width: 200px!important;
+        overflow: hidden!important;
+    }
+
+    .pagination {
+        position: relative;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        width: fit-content;
+        margin: 25px auto 25px;
+    }
+    .loader {
+        position: absolute;
+        right: -50px;
+        transform: translateY(50%);
+
+        width: 30px;
+        height: 30px;
+        border: 5px solid #000;
+        opacity: 0.5;
+        border-bottom-color: transparent;
+        border-radius: 50%;
+        display: inline-block;
+        box-sizing: border-box;
+        animation: rotation 1s linear infinite;
+    }
+
+    @keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+    }
+
+
+
+    .pagination__item,
+    .pagination__arrow,
+    .pagination__dots {
+        padding: 8px;
+        box-sizing: border-box;
+        margin: 0 4px;
+        text-decoration: none;
+        color: #000;
+        border: 1px solid #000;
+        border-radius: 4px;
+
+        cursor: pointer;
+    }
+
+    .pagination__box {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .pagination__item-active {
+        border-width: 3px;
+    }
+
+    .hidden {
+        display: none;
+    }
+</style>
+{% endblock %}

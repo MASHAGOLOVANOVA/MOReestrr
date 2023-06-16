@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+{% block title %}
+ЛПР РФ
+{% endblock %}
+
+{% block body %}
+<div style="display: flex; justify-content: center; ">
+<div>
+<div class="container" style="display: flex; justify-content: center;">
+
+    <div style="text-align: center; justify-content: center; margin-right: 20px; ">
+<h2>Регион</h2>
+<div>
+<select id = "mltislct3" multiple = "multiple">
+  {% for el in regions %}
+<option value="{{ el.id }}" > {{ el.region_name }}
+</option>
+  {% endfor %}
+</select>
+</div>
+   </div>
+
+<div style="text-align: center; justify-content: center; margin-right: 20px;">
+  <h2>Должность</h2>
+<div >
+<select id = "mltislct2" multiple = "multiple">
+ {% for el in pos %}
+<option > {{el}}
+</option>
+  {% endfor %}
+</select>
+</div>
+
+</div>
+
+  <div>
+    <button class="btn" onclick="filterRegion()" style="background-color: lightseagreen; color: #f1f1f1; margin-top: 40px; margin-left: 20px">Отфильтровать</button>
+  </div>
+
+    <div id="loader" class="loader"></div>
+</div>
+  </div>
+    </div>
+<div>
+    {% for c in lpr %}
+    <div id="card card{{c.dm_id}}" style =" background-color: darkslategray; color: #f1f1f1; margin-left: 150px;  padding-left: 20px; padding-right: 20px; margin-bottom: 10px; margin-top: 10px; padding-bottom: 20px; padding-top: 20px; margin-right: 150px; border-radius: 10px">
+        <h3>{{c.name}}</h3>
+        <h3 id="position">{{c.position}}</h3>
+        <h3 id="region" style="display: none">{{c.dm_region}}</h3>
+        {% if c.dm_phone !='' %}
+        <h4>Номера рабочих телефонов: {{c.dm_phone}}</h4>
+        {% endif %}
+        {% if c.dm_site !='' %}
+        <h4>Сайт: <a>{{c.dm_site}}</a></h4>
+        {% endif %}
+        {% if c.dm_mail !='' %}
+        <h4>Электронная почта: <a>{{c.dm_mail}}</a></h4>
+        {% endif %}
+        {% if c.dm_tg !='' %}
+        <h4>Телеграм: <a>{{c.dm_tg}}</a></h4>
+        {% endif %}
+        {% if c.dm_vk !='' %}
+        <h4>ВКонтакте: <a>{{c.dm_vk}}</a></h4>
+        {% endif %}
+        {% if c.dm_ok !='' %}
+        <h4>Одноклассники: <a>{{c.dm_ok}}</a></h4>
+        {% endif %}
+        {% if c.dm_facebook !='' %}
+        <h4>FaceBook: <a>{{c.dm_facebook}}</a></h4>
+        {% endif %}
+        <a class="btn" href="/dm/{{c.dm_id}}/edit" style=" margin-left: 20px; background-color: darkcyan; color: white">Редактировать</a>
+  <button class="btn"  style=" margin-left: 20px; background-color: darkcyan; color: white"
+          onclick="delDMCard({{c.dm_id}})" >Удалить</button>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+$(document).ready(function() {
+$('#mltislct2').multiselect({
+    maxHeight: 300,
+includeSelectAllOption: true,
+enableFiltering: true,
+enableCaseInsensitiveFiltering: true,
+filterPlaceholder:'Search Here..'
+});
+});
+</script>
+  <script>
+$(document).ready(function() {
+$('#mltislct3').multiselect({
+    maxHeight: 300,
+includeSelectAllOption: true,
+enableFiltering: true,
+enableCaseInsensitiveFiltering: true,
+filterPlaceholder:'Search Here..'
+});
+});
+</script>
+
+
+
+<script>
+   const loader = document.querySelector('#loader');
+
+$(document).ready(function(){
+  $("#myInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#myList li").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+</script>
+
+<script>
+    function filterRegion(_cards) {
+        // id selector
+        const select2 = document.querySelector('#mltislct2');
+        const select3 = document.querySelector('#mltislct3');
+
+        // id card
+        const cards = document.querySelectorAll('#card');
+
+        cards.forEach(card => {
+            let region = card.querySelector('#region').textContent;
+            let position = card.querySelector('#position').textContent;
+
+            let regionFilter = getSelectValues(select3);
+            let positionFilter = getSelectValues(select2);
+
+            if( compareFilterAndData(regionFilter, region)
+                && compareFilterAndData(positionFilter, position)
+            ) {
+                card.classList.remove('hide');
+            } else {
+                card.classList.add('hide');
+            }
+        })
+    }
+    function compareFilterAndData(filterArr, data) {
+        if(!filterArr.length || filterArr.find(el => el === data)) {
+            return true
+        } else {
+            return false
+        }
+    }
+    function getSelectValues(select) {
+      let result = [];
+      let options = select && select.options;
+      let opt;
+
+      for (let i=0, iLen=options.length; i<iLen; i++) {
+        opt = options[i];
+
+        if (opt.selected) {
+          result.push(opt.value || opt.text);
+        }
+      }
+      return result;
+    }
+
+    function stopStartLoader(value) {
+        switch (value) {
+            case 'start': {
+                loader.classList.remove('hide');
+                break;
+            }
+            case 'stop': {
+                loader.classList.add('hide');
+                break;
+            }
+        }
+    }
+    function delDMCard(id)
+    { const card = document.getElementById(`card card${id}`);
+
+        try {
+            stopStartLoader('start');
+            fetch('/dm/' + id + '/del', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            card.remove();
+        } catch (err) {
+            console.log(err);
+        } finally {
+            stopStartLoader('stop');
+        }
+    }
+
+</script>
+<style>
+    #card.hide {
+        display: none!important;
+    }
+     .loader {
+        position: absolute;
+        right: -50px;
+        transform: translateY(50%);
+
+        width: 30px;
+        height: 30px;
+        border: 5px solid #000;
+        opacity: 0.5;
+        border-bottom-color: transparent;
+        border-radius: 50%;
+        display: inline-block;
+        box-sizing: border-box;
+        animation: rotation 1s linear infinite;
+    }
+
+    @keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+    }
+
+</style>
+
+<!--<a class="dg-widget-link" href="http://2gis.ru/moscow/profiles/70000001017429085,4504127911785324,70000001030776662,70000001028420001,4504127908510464,4504127908568562,4504127908438136,4504128908664043,70000001021143594,4504128908454818,4504128908505819,4504127908652802,4504128908805685,70000001050180836,70000001066723116,70000001024174090,70000001041279128,4504127918092035,70000001030794790,70000001057248989,70000001056248556,70000001067539839,4504127908416783,70000001066265549,70000001057194389,4504127908529440,70000001036938611,70000001044578741,4504127908410119,4504128908414256,4504127908578337,70000001027993039,4504127908577717,70000001045002004,4504127919769585,4504128908692489,70000001037637817,70000001038477847,70000001032382312,4504128908629051,4504128908424592,70000001041746332,70000001056692311,70000001041179186,4504127908569342,4504127919828061,4504127908636221,70000001020957567,4504128908610400,4504127908632661,70000001018876680,70000001029515115,70000001019786252,4504127908659038,70000001029567214,4504127908668052,4504127908596272,4504127920091809,4504127919846900,4504127908664453,4504127918877161,4504128908824748,4504127908730081,70000001022193547,70000001030033809,4504127908647617,70000001042844035,4504128908503197,70000001007210807,4504128908567636,70000001007438943,4504583183806952,70000001039509491,4504127908999084,70000001065045347,4504127908658748,4504128908685336,4504127908661063,4504127908649477,4504127908647570,70000001038046126,70000001037686904,4504127908630339,4504127908644380,70000001007321158,70000001022137534,4504127909072626,70000001030427747,4504127908658572,4504127908668940,70000001030426568,70000001007110546,4504127917398881,70000001027694848,4504127918231330,4504583185983794,4504127919553643,70000001030403146,70000001007139986,70000001047729572/center/37.55264282226563,55.63962388406009/zoom/10?utm_medium=widget-source&utm_campaign=firmsonmap&utm_source=bigMap">Посмотреть на карте Москвы</a><script charset="utf-8" src="https://widgets.2gis.com/js/DGWidgetLoader.js"></script><script charset="utf-8">new DGWidgetLoader({"width":640,"height":600,"borderColor":"#a3a3a3","pos":{"lat":55.63962388406009,"lon":37.55264282226563,"zoom":10},"opt":{"city":"moscow"},"org":[{"id":"70000001017429085"},{"id":"4504127911785324"},{"id":"70000001030776662"},{"id":"70000001028420001"},{"id":"4504127908510464"},{"id":"4504127908568562"},{"id":"4504127908438136"},{"id":"4504128908664043"},{"id":"70000001021143594"},{"id":"4504128908454818"},{"id":"4504128908505819"},{"id":"4504127908652802"},{"id":"4504128908805685"},{"id":"70000001050180836"},{"id":"70000001066723116"},{"id":"70000001024174090"},{"id":"70000001041279128"},{"id":"4504127918092035"},{"id":"70000001030794790"},{"id":"70000001057248989"},{"id":"70000001056248556"},{"id":"70000001067539839"},{"id":"4504127908416783"},{"id":"70000001066265549"},{"id":"70000001057194389"},{"id":"4504127908529440"},{"id":"70000001036938611"},{"id":"70000001044578741"},{"id":"4504127908410119"},{"id":"4504128908414256"},{"id":"4504127908578337"},{"id":"70000001027993039"},{"id":"4504127908577717"},{"id":"70000001045002004"},{"id":"4504127919769585"},{"id":"4504128908692489"},{"id":"70000001037637817"},{"id":"70000001038477847"},{"id":"70000001032382312"},{"id":"4504128908629051"},{"id":"4504128908424592"},{"id":"70000001041746332"},{"id":"70000001056692311"},{"id":"70000001041179186"},{"id":"4504127908569342"},{"id":"4504127919828061"},{"id":"4504127908636221"},{"id":"70000001020957567"},{"id":"4504128908610400"},{"id":"4504127908632661"},{"id":"70000001018876680"},{"id":"70000001029515115"},{"id":"70000001019786252"},{"id":"4504127908659038"},{"id":"70000001029567214"},{"id":"4504127908668052"},{"id":"4504127908596272"},{"id":"4504127920091809"},{"id":"4504127919846900"},{"id":"4504127908664453"},{"id":"4504127918877161"},{"id":"4504128908824748"},{"id":"4504127908730081"},{"id":"70000001022193547"},{"id":"70000001030033809"},{"id":"4504127908647617"},{"id":"70000001042844035"},{"id":"4504128908503197"},{"id":"70000001007210807"},{"id":"4504128908567636"},{"id":"70000001007438943"},{"id":"4504583183806952"},{"id":"70000001039509491"},{"id":"4504127908999084"},{"id":"70000001065045347"},{"id":"4504127908658748"},{"id":"4504128908685336"},{"id":"4504127908661063"},{"id":"4504127908649477"},{"id":"4504127908647570"},{"id":"70000001038046126"},{"id":"70000001037686904"},{"id":"4504127908630339"},{"id":"4504127908644380"},{"id":"70000001007321158"},{"id":"70000001022137534"},{"id":"4504127909072626"},{"id":"70000001030427747"},{"id":"4504127908658572"},{"id":"4504127908668940"},{"id":"70000001030426568"},{"id":"70000001007110546"},{"id":"4504127917398881"},{"id":"70000001027694848"},{"id":"4504127918231330"},{"id":"4504583185983794"},{"id":"4504127919553643"},{"id":"70000001030403146"},{"id":"70000001007139986"},{"id":"70000001047729572"}]});</script><noscript style="color:#c00;font-size:16px;font-weight:bold;">Виджет карты использует JavaScript. Включите его в настройках вашего браузера.</noscript>
+-->
+{% endblock %}

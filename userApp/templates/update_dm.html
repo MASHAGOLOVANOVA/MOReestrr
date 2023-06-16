@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block title %}
+Редактировать ЛПР
+{% endblock %}
+
+{% block body %}
+<div style=" justify-content: center; text-align: center">
+<h1>Редактирование ЛПР</h1>
+<div>
+    <div id="card" style="margin-left: 150px;  padding-left: 20px; padding-right: 20px; margin-bottom: 10px; margin-top: 10px; padding-bottom: 20px; padding-top: 20px; margin-right: 150px; background-color: darkslategray; color: white; border-radius: 10px">
+        {# Форма для добавления Представителя#}
+        <form method="post" enctype="multipart/form-data">
+            <textarea type="text" name="name" required minlength="1" placeholder="ФИО" id="name" class="form-control">{{dm.name}}</textarea><br>
+        {# Выбор региона#}
+            <select style="color: darkslategray" name="region">
+            {% for item in regions %}
+              {% if dm.dm_region == item.id %}
+            <option style="color: darkslategray" value="{{ item.id }}" selected="selected">{{ item.region_name }}</option>
+              {% else %}
+            <option style="color: darkslategray" value="{{ item.id }}" >{{ item.region_name }}</option>
+              {% endif %}
+            {% endfor %}
+            </select><br><br>
+            <textarea name="pos" id="spec" class="form-control" placeholder="Должность">{{dm.position}}</textarea><br>
+            <textarea name="phone" id="phone" class="form-control" placeholder="Номера телефонов">{{dm.dm_phone}}</textarea><br>
+            <textarea  name="nets" id="nets" class="form-control" placeholder="Сайт">{{dm.dm_site}}</textarea><br>
+            <textarea name="mail" minlength="1" placeholder="Электронная почта" id="mail" class="form-control">{{dm.dm_mail}}</textarea><br>
+            <textarea  name="tg" id="tg" class="form-control" placeholder="Телеграм">{{dm.dm_tg}}</textarea><br>
+            <textarea  name="fb" id="fb" class="form-control" placeholder="FaceBook">{{dm.dm_facebook}}</textarea><br>
+            <textarea  name="vk" id="vk" class="form-control" placeholder="ВКонтакте">{{dm.dm_vk}}</textarea><br>
+            <textarea  name="ok" id="ok" class="form-control" placeholder="Одноклассники">{{dm.dm_ok}}</textarea><br>
+        <input type="submit" class="btn btn-dark" style="color: darkslategray; font-size: 30px" value="Сохранить">
+        </form>
+    </div>
+
+</div>
+</div>
+{% endblock %}

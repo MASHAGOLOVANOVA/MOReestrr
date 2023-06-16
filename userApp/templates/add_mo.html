@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}
+Добавление МО
+{% endblock %}
+{% block body %}
+<div style=" justify-content: center; text-align: center">
+<h1>Добавление МО</h1>
+<div>
+    <div id="card" style="margin-left: 150px;  padding-left: 20px; padding-right: 20px; margin-bottom: 10px; margin-top: 10px; padding-bottom: 20px; padding-top: 20px; margin-right: 150px; background-color: darkslategray; color: white; border-radius: 10px">
+        {# Форма для добавления МО#}
+        <form method="post" enctype="multipart/form-data">
+            <textarea type="text" name="legal_name" required minlength="1" placeholder="Юридическое наименование" id="legal_name" class="form-control"></textarea><br>
+            <textarea type="text" name="short_name" required minlength="1" placeholder="Краткое наименование" id="short_name" class="form-control"></textarea><br>
+        {# Выбор региона#}
+            <select style="color: darkslategray" name="region">
+            {% for item in regions %}
+            <option style="color: darkslategray" value="{{ item.id }}">{{ item.region_name }}</option>
+            {% endfor %}
+            </select><br><br>
+            <select style="color: darkslategray" name="private">
+                <option style="color: darkslategray" >Частная</option>
+                <option style="color: darkslategray" >Государственная</option>
+            </select><br><br>
+            <textarea name="spec" id="spec" class="form-control" placeholder="Специализация организации"></textarea><br>
+            <textarea name="leader" id="leader" class="form-control" placeholder="Руководитель"></textarea><br>
+            <textarea name="legal_adress" required minlength="1" placeholder="Юридический адрес" id="legal_adress" class="form-control"></textarea><br>
+            <textarea  name="inn" minlength="10" maxlength="10"
+                       onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
+                       required placeholder="ИНН" id="inn" class="form-control"></textarea><br>
+            <textarea name="phone" id="phone" class="form-control" placeholder="Номера телефонов"></textarea><br>
+            <textarea name="mail" minlength="1" placeholder="Электронная почта" id="mail" class="form-control"></textarea><br>
+            <textarea  name="nets" id="nets" class="form-control" placeholder="Сайты организации"></textarea><br>
+            <div style="display: flex; text-align: center"><h3>Партнер?</h3><input type="checkbox" name="partner" id="partner"><br></div>
+        <input type="submit" class="btn btn-dark" style="color: darkslategray; font-size: 30px" value="Добавить">
+        </form>
+    </div>
+</div>
+</div>
+{% endblock %}

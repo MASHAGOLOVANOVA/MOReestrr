@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='ru' lang='ru' dir='ltr'>
+<head>
+<title>List-Org</title>
+<meta http-equiv="content-language" content="ru"> 
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name=viewport content="width=device-width, initial-scale=1">
+<script defer="defer" type="text/javascript" src="/js/jquery.min.js"></script>
+<link rel="dns-prefetch" href="https://cdn.list-org.com">
+<link rel="preconnect" href="https://cdn.list-org.com" crossorigin>
+<link rel="dns-prefetch" href="https://www.googletagmanager.com">
+<link rel="preconnect" href="https://www.googletagmanager.com" crossorigin>
+<link rel="dns-prefetch" href="https://www.google-analytics.com">
+<link rel="preload" href="https://cdn.list-org.com/image/logo.png" as="image">
+<link rel="preload" href="https://cdn.list-org.com/fonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+<link rel="preload" as="style" href="https://cdn.list-org.com/style/fontawesome.min.css"/>
+<script async type="text/javascript" src="https://www.googletagmanager.com/gtag/js?id=UA-114579997-1"></script>
+<script type="text/javascript">
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config','UA-114579997-1');
+</script>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<link href="https://cdn.list-org.com/style/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" media="screen" href="https://cdn.list-org.com/style/main.css?ver=19"/>
+</head>
+<body class="bg-light">
+<div class="container-fluid bg-white p-0 header-full">
+<div class="header container">
+<a class="border rounded me-3 mt-1 cd-primary-nav-trigger"><span class="cd-menu-icon"></span></a>
+<a href='#' class='lbs64' rel='rLw==' title='В начало'>
+<span class='logo'></span>
+</a><span class='h1'>List-Org - Проверка, что Вы не робот</span>
+</div>
+</div>
+<div class="main">
+<div class="content">
+<div class='card w-100 p-1 p-lg-3 mt-1'>
+<br><form name=frm method=POST>Вы слишком часто обращались к сайту и мы хотим убедиться, что вы не робот.<br><br><div class='g-recaptcha' data-sitekey='6LfYOKkdAAAAADZMBZy-0lJiXbWvtBiEmSXw0bMN'></div><br><br><input type="hidden" value="/company/12209794" name="from"><input class="btn btn-primary m-1" type="submit" value=" Проверить! " name="submit"></form></p>
+</div></div>
+<nav class='menu'>
+<div class='rmenu'>
+<form action="/search">
+<div class="input-group pe-2">
+ <button type="submit" class="input-group-addon input-group-text"><i class="fa fa-search fa-fw"></i></button>
+ <input name="val" class="form-control" type="text" placeholder="Поиск" title='по наименованию, ИНН, ОГРН, адресу, руководителю'/>
+</div>
+<input name="type" value="all" type="hidden"/>
+</form>
+<ul>
+<li><a href="/?search=inn"><i class="fa-sm fa fa-angle-double-right fa-fw"></i>Поиск по ИНН</a></li>
+<li><a href="/?search=ogrn"><i class="fa-sm fa fa-angle-double-right fa-fw"></i>Поиск по ОГРН</a></li>
+<li><a href="/?search=okpo"><i class="fa-sm fa fa-angle-double-right fa-fw"></i>Поиск по ОКПО</a></li>
+<li><a href="/?search=phone"><i class="fa-sm fa fa-phone fa-fw"></i>Поиск по телефону</a></li>
+<li><a href="/?search=name"><i class="fa-sm fa far fa-file-alt fa-fw"></i>Поиск по наименованию</a></li>
+<li><a href="/?search=boss"><i class="fa-sm fa fas fa-user-tie fa-fw"></i>Поиск по руководителю</a></li>
+<li><a href="/?search=address"><i class="fa-sm fa fa-map-marker-alt fa-fw"></i>Поиск по адресу</a></li>
+<li><a href="/?search=fio"><i class="fa-sm fa fa-user-friends fa-fw"></i>Поиск предпринимателей</a></li>
+<li><a href="/?search=trademark"><i class="fa-sm fa fa-trademark fa-fw"></i>Поиск товарных знаков</a></li>
+<br/>
+<li><a href="/okato"><i class="fa-sm fa fa-globe fa-fw"></i>Список по регионам (ОКАТО)</a></li>
+<li><a href="/okved2"><i class="fa-sm fa fa-list-ul fa-fw"></i>Список по отраслям (ОКВЭД)</a></li>
+<li><a href="/mans"><i class="fa-sm fa far fa-address-book fa-fw"></i>Список предпринимателей</a></li>
+<li><a href="/account/favorites"><i class="fa-sm fa far fa-star fa-fw"></i>Избранное</a></li>
+</ul>
+</div>
+</nav>
+<!--noindex-->
+<div class=footer>
+<br/><div id='bl_970b'></div>
+<div class="footer_b"><!--noindex-->
+<div id="yandex_rtb_R-A-1572957-5"></div>
+<script>window.yaContextCb.push(()=>{
+Ya.Context.AdvManager.render({
+renderTo: 'yandex_rtb_R-A-1572957-5',
+blockId: 'R-A-1572957-5'
+})
+})</script>
+<!--/noindex--></div><br><br>
+<div id="google_ads_iframe_10">При копировании материалов гиперссылка на www.list-org.com обязательна.</div>
+<div class="info_cookie">Мы используем метаданные пользователя (cookie, данные об ip-адресе) для функционирования сайта. Если вы не хотите, чтобы эти ваши данные обрабатывались, то вам следует покинуть сайт.</div>
+</div>
+<!--/noindex-->
+</div>
+</body>
+<link rel="stylesheet" type="text/css" media="screen" href="https://cdn.list-org.com/style/fontawesome.min.css"/>
+<script defer="defer" type="text/javascript" src="https://cdn.list-org.com/js/company.js?ver=19"></script>
+</html>

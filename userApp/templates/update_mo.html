@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}
+Редатировать МО
+{% endblock %}
+
+{% block body %}
+<div style=" justify-content: center; text-align: center">
+<h1>Редактирование МО</h1>
+<div>
+    <div id="card" style="margin-left: 150px;  padding-left: 20px; padding-right: 20px; margin-bottom: 10px; margin-top: 10px; padding-bottom: 20px; padding-top: 20px; margin-right: 150px; background-color: darkslategray; color: white; border-radius: 10px">
+        {# Форма для добавления МО#}
+        <form method="post" enctype="multipart/form-data">
+            <textarea type="text" name="legal_name" required minlength="1" placeholder="Юридическое наименование" id="legal_name" class="form-control">{{mo.name}}</textarea><br>
+            <textarea type="text" name="short_name" required minlength="1" placeholder="Краткое наименование" id="short_name" class="form-control">{{mo.short_name}}</textarea><br>
+        {# Выбор региона#}
+            <select style="color: darkslategray" name="region">
+            {% for item in regions %}
+                {% if item.id==mo.clinic_region %}
+                    <option value="{{ item.id}}" selected="selected">{{ item.region_name}}</option>
+                {% else %}
+            <option style="color: darkslategray" value="{{ item.id }}">{{ item.region_name }}</option>
+                {% endif %}
+            {% endfor %}
+            </select><br><br>
+            <select style="color: darkslategray" name="private">
+                {% if mo.is_private %}
+                <option style="color: darkslategray" selected="selected">Частная</option>
+                <option style="color: darkslategray" >Государственная</option>
+                {% else %}
+                <option style="color: darkslategray">Частная</option>
+                <option style="color: darkslategray"  selected="selected">Государственная</option>
+                {% endif %}
+            </select><br><br>
+            <textarea name="spec" id="spec" class="form-control" placeholder="Специализация организации">{{mo.specialization}}</textarea><br>
+            <textarea name="leader" id="leader" class="form-control" placeholder="Руководитель">{{mo.leader}}</textarea><br>
+            <textarea name="legal_adress" required minlength="1" placeholder="Юридический адрес" id="legal_adress" class="form-control">{{mo.clinic_legal_address}}</textarea><br>
+            <textarea  name="inn" minlength="10" maxlength="10" required placeholder="ИНН" id="inn" class="form-control"
+            onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57">{{mo.inn}}</textarea><br>
+            <textarea name="phone" id="phone" class="form-control" placeholder="Номера телефонов">{{mo.phone_numbers}}</textarea><br>
+            <textarea name="mail" minlength="1" placeholder="Электронная почта" id="mail" class="form-control">{{mo.mail}}</textarea><br>
+            <textarea  name="nets" id="nets" class="form-control" placeholder="Сайты организации">{{mo.nets}}</textarea><br>
+            <div style="display: flex; text-align: center"><h3>Партнер?</h3>
+                {% if mo.partner %}
+                <input id="partner" name="partner" type="checkbox" checked>
+            {% else %}
+                <input id="partner" name="partner" type="checkbox">
+            {% endif %}
+            <br></div>
+        <input type="submit" class="btn btn-dark" style="color: darkslategray; font-size: 30px" value="Сохранить">
+        </form>
+    </div>
+
+</div>
+</div>
+{% endblock %}
